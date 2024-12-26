@@ -1,3 +1,5 @@
+# prompt: make the plot above for streamlit
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import altair as alt
@@ -15,16 +17,14 @@ page = st.sidebar.selectbox("Choose a page", ["Data Overview", "Total Users per 
 if page == "Data Overview":
     st.header("Data Overview")
     st.write(df_day.head())
+    st.subheader("Data Analisis menggunakan fungsi describe()")
     st.write(df_day.describe())
 
-    if st.checkbox("Show Data Info"):
-        st.write(df_day.info())
-
-    if st.checkbox("Show Data Sample"):
-        st.write(df_day.sample(5))
 
 elif page == "Total Users per Season":
-    st.header("Total Users per Season")
+
+    st.subheader("Line chart untuk menunjukan jumlah pengguna yang dibagi tiap season")
+
 
     # Create the new DataFrame
     customer_df = df_day[['instant', 'cnt', 'season']].rename(columns={'instant': 'id', 'cnt': 'total_user'})
@@ -44,22 +44,25 @@ elif page == "Total Users per Season":
     plt.yticks(season_customer_totals.values, season_customer_totals.values)
     st.pyplot(fig)
 
+    st.write(
+        "Pada line chart di atas dapat dilihat bahwa penggunaan bike sharing paling rendah ada pada musim spring dan paling tinggi pada musim autumn")
+
 elif page == "Total User vs Temperature":
-    st.header("Total User vs Temperature")
+    st.subheader("Total User vs Temperature")
     # making line chart with first line with total_user and another line with temperature
 
     line_chart = alt.Chart(df_day).mark_line().encode(
         x=alt.X('season', axis=alt.Axis(values=[1, 2, 3, 4])),
-        y='sum(cnt)',
+        y=alt.Y('sum(cnt)', axis=alt.Axis(title='Total Users')),
         tooltip=['season', 'sum(cnt)']
     )
 
     line_chart2 = alt.Chart(df_day).mark_line(color='orange').encode(
         x='season',
-        y='mean(temp)',
+        y=alt.Y('mean(temp)', axis=alt.Axis(title='mean of temperature')),
         tooltip=['season', 'mean(temp)']
     ).properties(
-        title='Total User vs. Temperature',
+        title='',
         width=800,  # Set the width of the chart
         height=600  # Set the height of the chart
     )
@@ -69,3 +72,6 @@ elif page == "Total User vs Temperature":
 
     # Display the combined chart
     st.altair_chart(final_chart)
+
+    st.write("Pada line chart diatas dapat dilihat terdapat korelasi positif pada data temperature dan total pengguna, "
+             "yang mana semakin tinggi suhu pada saat itu maka penggunaan bike sharing cenderung meningkat dan begitu juga sebaliknya.")
