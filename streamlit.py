@@ -1,5 +1,3 @@
-# prompt: make the plot above for streamlit
-
 import pandas as pd
 import matplotlib.pyplot as plt
 import altair as alt
